@@ -37,7 +37,8 @@ We provide all the preprocessed datasets used in the paper on [FigShare](https:/
 
 After downloading, place the decompressed data in the [`data/`](data) folder.
 
-## How to train
+## How to train and evaluate
+### Training
 To train a model (NicheFlow, RPCFlow or SPFlow), you will also need the **classifier checkpoints** (used for evaluation), available on [FigShare](https://figshare.com/articles/software/NicheFlow_-_Data_Checkpoints_and_Results/30426610) in `main_ckpts.zip`.
 
 After downloading, place them in the [`ckpts/`](ckpts) folder.
@@ -57,6 +58,13 @@ All experiment configurations are stored in the [`configs/experiment/`](configs/
 **Note:** If you encounter any path-related errors, ensure that:
 - The root paths [`configs/paths/default.yaml`](configs/paths/default.yaml) reflect your local setup.
 - The classifier checkpoint and dataset paths are correctly set in each [`configs/data/{model_name}_{dataset_name}.yaml`](configs/data/) file.
+
+### Evaluation
+Once training is complete, you can evaluate the model using a saved Lightning checkpoint by running:
+```bash
+python nicheflow/eval.py experiment=... ckpt_path=...
+```
+The evaluation results will be stored in `outputs/eval_lightning`.
 
 ## Adding new datasets
 
