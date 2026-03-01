@@ -5,7 +5,7 @@ defaults:
   - model: classifier
   - callbacks: default
   - logger: null
-  - trainer: cpu
+  - trainer: gpu #cpu
   - paths: default
   - hydra: default
   - launcher: slurm

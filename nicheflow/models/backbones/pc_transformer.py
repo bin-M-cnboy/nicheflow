@@ -149,6 +149,14 @@ class TimeEmbedding(nn.Module):
 
 
 class PointCloudTransformer(nn.Module):
+    """
+    PointCloudTransformer 用于处理空间转录组数据的点云 Transformer 主干网络。
+    
+    它采用了典型的 Encoder-Decoder 架构：
+    - Encoder: 接收条件时间点(t_0)的微环境点云(细胞表达式+坐标+时间=0)，利用 Self-Attention 提取源微环境的上下文特征。
+    - Decoder: 接收目标时间点(t_1)的带噪点云(细胞表达式+坐标+目标时间 t)，并通过 Cross-Attention 获取 Encoder 的历史特征，
+               最终输出用于流匹配(Flow Matching)计算的预测向量(预测细胞表达式和坐标的导数/流向量)。
+    """
     def __init__(
         self,
         pca_dim: int,
@@ -203,45 +211,52 @@ class PointCloudTransformer(nn.Module):
 
     def forward(
         self,
-        pcs_cond: Float[Tensor, "B N_points_t1 D_in"],
-        pos_cond: Float[Tensor, "B N_points_t1 D_coord"],
-        ohe_cond: Float[Tensor, "B N_points_t1 D_ohe"],
-        pcs_target: Float[Tensor, "B N_points_t2 D_in"],
-        pos_target: Float[Tensor, "B N_points_t2 D_coord"],
-        ohe_target: Float[Tensor, "B N_points_t1 D_ohe"],
-        t_target: Float[Tensor, "B ..."],
+        # 条件阶段 (t_0 源微环境) 的输入
+        pcs_cond: Float[Tensor, "B N_points_t1 D_in"],      # 条件细胞基因表达 PCA 成分
+        pos_cond: Float[Tensor, "B N_points_t1 D_coord"],   # 条件细胞的空间坐标
+        ohe_cond: Float[Tensor, "B N_points_t1 D_ohe"],     # 条件时间点的独热编码 (One-Hot)
+        # 目标阶段 (当前采样的状态 x_t) 的输入
+        pcs_target: Float[Tensor, "B N_points_t2 D_in"],    # 目标细胞基因表达 PCA 成分 (带噪)
+        pos_target: Float[Tensor, "B N_points_t2 D_coord"], # 目标细胞的空间坐标 (带噪)
+        ohe_target: Float[Tensor, "B N_points_t1 D_ohe"],   # 目标时间点的独热编码
+        t_target: Float[Tensor, "B ..."],                   # 连续流的当前时间步 t (用于流匹配中的ODE演化)
+        # 掩码 (用于处理不同大小的微环境点云 batch 填充)
         mask_condition: Float[Tensor, "B N_points_t1"] | None = None,
         mask_target: Float[Tensor, "B N_points_t2"] | None = None,
     ) -> tuple[Float[Tensor, "B N_points_t2 D_in"], Float[Tensor, "B N_points_t2 D_coord"]]:
-        # Concatenate the timestep one hot encoding to the PCs
+        # 1. 拼接细胞表达和时间相关的 One-Hot 编码特征
         pcs_cond = torch.cat([pcs_cond, ohe_cond], dim=-1)
         pcs_target = torch.cat([pcs_target, ohe_target], dim=-1)
 
-        # Embed condition
+        # 2. 条件微环境 (源) 特征嵌入
         x_cond = self.x_emb(pcs_cond)
         pos_cond = self.pos_emb(pos_cond)
+        # 条件点云通常认为时间 t=0，使用全0向量作为占位
         t_cond = torch.zeros_like(x_cond, device=x_cond.device, dtype=x_cond.dtype)
 
-        # Encode
+        # 3. Encoder 计算 (源微环境上下文特征提取)
+        # 沿着特征维度拼接表达、时间和空间坐标的 Embedding (三者维度各占 1/3，正好等于 embed_dim)
         enc_output = torch.cat([x_cond, t_cond, pos_cond], dim=-1)
         for block in self.enc_blocks:
             enc_output = block(x=enc_output, mask=mask_condition)
 
-        # Embed target
+        # 4. 目标微环境 (当前中间态) 特征嵌入
         x_target = self.x_emb(pcs_target)
         pos_target = self.pos_emb(pos_target)
+        # 提取连续时间步的傅里叶编码
         t_target = self.time_emb(t_target)[:, None, :].expand(-1, x_target.size(1), -1)
 
-        # Decode
+        # 5. Decoder 计算 (融合源微环境条件指导目标态预测)
         dec_output = torch.cat([x_target, t_target, pos_target], dim=-1)
         for block in self.dec_blocks:
             dec_output = block(
                 x=dec_output,
-                enc_output=enc_output,
+                enc_output=enc_output, # Cross Attention 指向 Encoder 输出
                 self_mask=mask_target,
                 cross_mask=mask_condition,
             )
 
+        # 6. 输出映射：还原回 表达维度(pca_dim) + 坐标维度(coord_dim)
         out = self.out_linear(dec_output)
 
         x_pred = out[:, :, : self.pca_dim]

@@ -31,3 +31,8 @@ class H5ADCTDataset(Dataset):
             raise IndexError(f"Index {index} out of bounds [0, {len(self)})")
 
         return {"X": self.X[index], "y": self.ct[index]}
+'''
+classifier
+专门负责训练细胞类型分类器（如 ckpts/Classifier_MED.ckpt），
+用来在后续实验中评估各个模型生成的细胞特征是否依旧保留了合理的细胞属性。
+'''
