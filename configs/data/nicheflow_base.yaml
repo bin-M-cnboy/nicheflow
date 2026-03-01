@@ -6,7 +6,7 @@ datamodule:
   resample_n_microenvs: 64
   ot_lambda: 0.1
   val_upsample_factor: 4
-  train_batch_size: 2
-  num_workers: 2
+  train_batch_size: 16 #2
+  num_workers: 4 #2
 
 coord_dim: 2

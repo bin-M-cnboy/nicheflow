@@ -39,3 +39,47 @@ We also provide the evaluation results as CSV files, which are the same files ge
 - **$\lambda$ OT ablation study**: Download `ot_ablation_results.zip` and extract it into `outputs/eval_ot_ablations/`.
 
 Once the files are in place, you can use the [`print_eval_results`](../notebooks/print_eval_results.ipynb) notebook to reproduce the tables shown in the paper.
+
+---
+---
+
+# 实验复现
+
+## 表格
+
+对于下文描述的所有实验，在运行相应的评估脚本后，您可以使用[`print_eval_results`](../notebooks/print_eval_results.ipynb) notebook 来生成我们论文中展示的表格。
+
+## 主要结果
+要复现论文中报告的主要结果，您可以使用 `main_ckpts.zip` 文件中提供的预训练检查点（checkpoints），并运行评估脚本。
+
+在继续操作之前，请确保您已遵循了主 [`README`](README.md) 中的说明，并且已经下载了数据集和主要检查点。
+
+一切准备就绪后，运行：
+```bash
+python nicheflow/eval_state_dict_ckpts.py
+```
+
+## $K$ 区域消融实验
+要复现 $K$ 区域消融实验的结果，请从 [FigShare](https://figshare.com/articles/software/NicheFlow_-_Data_Checkpoints_and_Results/30426610) 下载 `kregion_ablations_ckpts.zip`，并将检查点解压到[`ckpts/kregion_ablations`](../ckpts/kregion_ablations) 文件夹中。
+
+一切准备就绪后，运行：
+```bash
+python nicheflow/eval_state_dict_ckpts_kregion_ablations.py
+```
+
+## $\lambda$ OT 消融实验
+要复现 $\lambda$ OT 消融实验的结果，请从 [FigShare](https://figshare.com/articles/software/NicheFlow_-_Data_Checkpoints_and_Results/30426610) 下载 `ot_ablations_ckpts.zip` 文件，并将检查点解压到 [`ckpts/ot_ablations`](../ckpts/ot_ablations) 文件夹中。
+
+一切准备就绪后，运行：
+```bash
+python nicheflow/eval_state_dict_ckpts_ot_ablations.py
+```
+
+## 我们的预生成结果
+我们还提供了 CSV 格式的评估结果文件，这些文件与上述评估脚本生成的文件完全一致。如果您更倾向于直接下载它们，可以从 [FigShare](https://figshare.com/articles/software/NicheFlow_-_Data_Checkpoints_and_Results/30426610) 获取。
+
+- **主要结果**：下载 `main_results.zip` 并将其解压到 `outputs/eval_main/` 目录中。
+- **$K$ 区域消融实验**：下载 `kregion_ablations_results.zip` 并将其解压到 `outputs/eval_kregion_ablations/` 目录中。
+- **$\lambda$ OT 消融实验**：下载 `ot_ablation_results.zip` 并将其解压到 `outputs/eval_ot_ablations/` 目录中。
+
+文件放置到位后，您可以使用 [`print_eval_results`](../notebooks/print_eval_results.ipynb) notebook 来复现论文中展示的表格。
