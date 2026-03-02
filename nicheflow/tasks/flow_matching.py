@@ -179,6 +179,15 @@ class FlowMatching(LightningModule):
         self.log_dict(
             {f"train/{key}": value.item() for key, value in losses.items()}, prog_bar=True
         )
+
+        '''
+        === 解决 Lightning 的 batch_size 推断警告 ===
+        self.log_dict(
+            {f"train/{key}": value.item() for key, value in losses.items()}, 
+            prog_bar=True,
+            batch_size=400  # <--- 直接指定确切的 batch_size 数量，或使用例如 batch_size=len(batch.x) 动态获取
+        )
+        '''
         return losses
 
     def on_validation_epoch_start(self) -> None:

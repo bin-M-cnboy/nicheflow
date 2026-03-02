@@ -4,6 +4,12 @@ from lightning import Callback, LightningDataModule, LightningModule, Trainer
 from lightning.pytorch.loggers import Logger
 from omegaconf import DictConfig, OmegaConf
 
+'''
+=== 解决 torchdyn 的常微分方程误差容忍度 (Tolerances) 警告 ===
+import warnings
+warnings.filterwarnings("ignore", message="Setting tolerances has no effect on fixed-step methods")
+'''
+
 from nicheflow.utils import (
     RankedLogger,
     instantiate_callbacks,
