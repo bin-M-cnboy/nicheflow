@@ -4,6 +4,6 @@ defaults:
 accelerator: gpu
 devices: 1
 
-# devices: 4               
+# devices: [0,1,2,4]           
 # strategy: ddp          
 # use_distributed_sampler: True 
