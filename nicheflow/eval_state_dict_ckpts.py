@@ -34,6 +34,7 @@ eval_runs = 5
 
 
 def evaluate(experiment_override: str, ckpt_path: Path):
+    '''实例化各类组件'''
     config = compose(
         config_name="train",
         overrides=[f"experiment={experiment_override}"],
@@ -50,6 +51,7 @@ def evaluate(experiment_override: str, ckpt_path: Path):
     _logger.info(f"Instantiating model <{config.model._target_}>")
     model: FlowMatching = instantiate(config.model)
 
+    '''加载模型权重'''
     # 加载状态字典（即模型的权重参数 State Dict）
     ckpt = torch.load(
         ckpt_path,
@@ -64,6 +66,7 @@ def evaluate(experiment_override: str, ckpt_path: Path):
         config.trainer, callbacks=None, logger=False, accelerator="auto"
     )
 
+    '''重复多次测试'''
     result_list = []
 
     # 进行测试和评估
