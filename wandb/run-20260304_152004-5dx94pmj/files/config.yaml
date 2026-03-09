@@ -1,0 +1,39 @@
+_wandb:
+    value:
+        cli_version: 0.25.0
+        e:
+            o6flnpr1idp18zfoclz5xiu95hhbekrh:
+                codePath: /data/bma/nicheflow/NicehFlow_NOTE.ipynb
+                codePathLocal: NicehFlow_NOTE.ipynb
+                email: 3766489095@qq.com
+                executable: /data/bma/envs/nicheflow/bin/python
+                git:
+                    commit: 813db2a45542503702d28e5619081dec54787867
+                    remote: https://github.com/bin-M-cnboy/nicheflow.git
+                host: amax405
+                os: Linux-5.15.0-70-generic-x86_64-with-glibc2.31
+                program: /data/bma/nicheflow/NicehFlow_NOTE.ipynb
+                python: CPython 3.11.14
+                root: /data/bma/nicheflow
+                startedAt: "2026-03-04T07:20:04.270247Z"
+                writerId: o6flnpr1idp18zfoclz5xiu95hhbekrh
+        m: []
+        python_version: 3.11.14
+        t:
+            "3":
+                - 2
+                - 16
+            "4": 3.11.14
+            "5": 0.25.0
+            "8":
+                - 1
+            "12": 0.25.0
+            "13": linux-x86_64
+architecture:
+    value: CNN
+dataset:
+    value: CIFAR-100
+epochs:
+    value: 10
+learning_rate:
+    value: 0.02

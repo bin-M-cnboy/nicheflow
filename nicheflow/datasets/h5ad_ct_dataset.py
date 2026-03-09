@@ -8,8 +8,8 @@ from nicheflow.preprocessing.h5ad_dataset_type import load_h5ad_dataset_dataclas
 
 
 class CellTypeBatch(TypedDict):
-    X: torch.Tensor
-    y: torch.Tensor
+    X: torch.Tensor # 输入特征 X. PCA-reduced gene expressions
+    y: torch.Tensor # 预测目标 y. The cell types, represented as integers (after mapping from original string labels)
 
 
 class H5ADCTDataset(Dataset):

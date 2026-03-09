@@ -1,0 +1,17 @@
+{
+  "os":  "Linux-5.15.0-70-generic-x86_64-with-glibc2.31",
+  "python":  "CPython 3.11.14",
+  "startedAt":  "2026-03-04T07:17:24.193328Z",
+  "program":  "/data/bma/nicheflow/NicehFlow_NOTE.ipynb",
+  "codePath":  "/data/bma/nicheflow/NicehFlow_NOTE.ipynb",
+  "codePathLocal":  "NicehFlow_NOTE.ipynb",
+  "git":  {
+    "remote":  "https://github.com/bin-M-cnboy/nicheflow.git",
+    "commit":  "813db2a45542503702d28e5619081dec54787867"
+  },
+  "email":  "3766489095@qq.com",
+  "root":  "/data/bma/nicheflow",
+  "host":  "amax405",
+  "executable":  "/data/bma/envs/nicheflow/bin/python",
+  "writerId":  "4l22ym636ejltdm0z9ry3fzqpwnty4uj"
+}
